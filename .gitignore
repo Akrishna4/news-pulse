@@ -1,0 +1,25 @@
+# Environment
+.env
+**/.env
+.env.local
+.env.*.local
+!**/.env.example
+
+# Node
+node_modules/
+**/node_modules/
+npm-debug.log*
+
+# Next.js
+frontend/.next/
+frontend/out/
+
+# Python
+__pycache__/
+**/__pycache__/
+*.pyc
+.venv/
+venv/
+
+# OS
+.DS_Store

@@ -1,0 +1,25 @@
+{
+  "name": "news-pulse-backend",
+  "version": "0.1.0",
+  "private": true,
+  "description": "News Pulse Node.js API — serves clusters/timeline data and triggers the Python ingestion pipeline.",
+  "type": "commonjs",
+  "engines": {
+    "node": "20.x"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^16.6.1",
+    "express": "^4.22.3",
+    "pg": "^8.23.0",
+    "zod": "^3.23.0"
+  },
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
