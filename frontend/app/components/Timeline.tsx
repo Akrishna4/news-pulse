@@ -67,10 +67,10 @@ function computeDataScale(clusters: TimelineCluster[]): {
 
   if (starts.length === 0) return null;
 
-  const scaleTo = starts[starts.length - 1];
+  const fallbackScaleTo = starts[starts.length - 1];
 
   if (starts.length === 1) {
-    return { scaleFrom: starts[0], scaleTo, outlierThreshold: -Infinity };
+    return { scaleFrom: starts[0], scaleTo: fallbackScaleTo, outlierThreshold: -Infinity };
   }
 
   // Median: lower-middle element of sorted array
@@ -81,7 +81,7 @@ function computeDataScale(clusters: TimelineCluster[]): {
 
   if (nonOutliers.length === 0) {
     // Degenerate edge case: all points equidistant — use full range
-    return { scaleFrom: starts[0], scaleTo, outlierThreshold: -Infinity };
+    return { scaleFrom: starts[0], scaleTo: fallbackScaleTo, outlierThreshold: -Infinity };
   }
 
   // Snap scale boundaries to full calendar days to avoid arbitrary sub-day divisions
