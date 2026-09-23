@@ -55,7 +55,7 @@ Python scraper ──────────── Neon Postgres
 | The Guardian | `https://www.theguardian.com/world/rss` |
 | Al Jazeera | `https://www.aljazeera.com/xml/rss/all.xml` |
 
-Reuters was the originally intended fifth source but was replaced by Al Jazeera. Reuters discontinued all public RSS feeds in June 2020 — this is a deliberate business decision on their part, not a network or parsing issue.
+Reuters was the originally intended fifth source but was replaced by NY Times. Reuters discontinued all public RSS feeds in June 2020 — this is a deliberate business decision on their part, not a network or parsing issue.
 
 ---
 
