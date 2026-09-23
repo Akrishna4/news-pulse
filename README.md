@@ -82,7 +82,7 @@ Apply the schema to your Postgres instance:
 psql "$DATABASE_URL" -f schema.sql
 ```
 
-The schema creates the `articles`, `clusters`, `article_cluster`, and `ingestion_jobs` tables, and enables the `citext` and `pgcrypto` extensions.
+The schema creates the `articles`, `clusters`, `article_cluster`, and `ingestion_jobs` tables, and enables the `citext` extension.
 
 ### 3. Scraper (Python)
 
