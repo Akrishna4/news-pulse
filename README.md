@@ -159,7 +159,7 @@ psql "$DATABASE_URL" -f schema.sql
 
 Key schema decisions:
 - `articles.url` uses `CITEXT` so duplicate detection is case-insensitive across the entire URL string, not just the scheme and host.
-- `ingestion_jobs.id` uses `gen_random_uuid()` (from `pgcrypto`), so IDs are stable UUIDs rather than sequential integers.
+- `ingestion_jobs.id` uses `gen_random_uuid()`, which has been a built-in Postgres function since version 13 and requires no extension.
 - `clusters.start_time` / `end_time` can be `NULL` when all articles in a cluster have no `published_at` — this is intentional, not a schema gap.
 
 ---
@@ -200,7 +200,7 @@ curl http://localhost:4000/ingest/status/<jobId>
 
 ### Why word-overlap, not TF-IDF
 
-Word-overlap was chosen over TF-IDF for two reasons: (1) at the scale of a real-time news feed (~200–400 articles per run), TF-IDF's IDF weights become unstable as the corpus is small and constantly shifting, making threshold tuning fragile; (2) the news domain has a natural property that makes raw overlap effective — stories on the same event share highly specific named entities and proper nouns (names, places, acronyms) that appear in very few other articles, so a shared-count threshold alone is already selective. TF-IDF would be a clear upgrade for a larger, longer-lived corpus.
+Word-overlap was chosen over TF-IDF primarily because the assessment rewards clear reasoning and explainability over algorithmic sophistication, and word-overlap is dramatically easier to demonstrate and explain on camera. Showing a concrete list of shared words — "these six words caused these two stories to merge" — is immediately legible. Explaining TF-IDF vectorisation, IDF weight computation, and cosine-similarity thresholds in a five-minute video walkthrough is not. The approach is also genuinely defensible for this task: news stories covering the same event do share specific named entities and proper nouns that appear in very few other articles, so a shared-count threshold has real selectivity. TF-IDF would be a straightforward upgrade path but was deliberately not chosen here.
 
 ### Algorithm
 
@@ -216,9 +216,9 @@ The algorithm is pairwise (each article is compared against existing cluster rep
 
 ### Threshold Reasoning
 
-- **`shared >= 3`** — requires at least three words in common. A threshold of 1 or 2 catches too many coincidental overlaps; 4+ was too strict for short summaries from sources that paraphrase rather than syndicate.
-- **`ratio >= 0.4`** — requires the shared words to represent at least 40% of the shorter article's significant-word set. This prevents a large cluster from absorbing short articles that happen to mention one or two common topic words.
-- **25% corpus-adaptive filter** — words appearing in more than a quarter of all articles in a run are by definition not topic-specific for that run, regardless of whether they appear in a generic stopword list. The threshold was tuned against real feed data: values below 20% removed too many legitimate topic words; values above 30% left too many common news-cycle words in the sets.
+- **`shared >= 3`** — the value 3 comes directly from the assessment's own worked example and was adopted as the starting point. It was not derived from a sweep. The only empirical check performed was the Teesside/Sydney false-merge investigation, which confirmed the two articles shared 6 words (`crime`, `arrested`, `organised`, `police`, `officers`, `men`). Since `shared_count = 6` already clears any threshold up to 6, a higher absolute threshold would not have prevented that merge. No threshold adjustment was pursued as a result.
+- **`ratio >= 0.4`** — a principled starting value requiring the shared words to represent at least 40% of the shorter article's significant-word set. This prevents a large cluster from absorbing short articles that happen to share one or two common topic words.
+- **25% corpus-adaptive filter** — a word appearing in more than a quarter of all articles in a run is by definition not topic-specific for that run, regardless of whether it appears in a generic stopword list. 25% was chosen as a reasonable initial value, not the result of an empirical sweep across candidate thresholds.
 
 ---
 
