@@ -421,4 +421,4 @@ Testing was continuous live verification throughout development rather than a si
 
 ## Video Walkthrough
 
-[link here]
+[Watch the walkthrough](https://www.loom.com/share/2d00a39260994905b570b71158dd3ca8)
